@@ -1,16 +1,8 @@
 from django.db import models
 
-# Create your models here.
-
 
 # USER MODEL AND MANAGER
-class USER(models.Model):
-  username = models.models.CharField(max_length=250)
-  email = models.models.CharField(max_length=50)
-  password = models.models.TextField()
-  created_at = models.DateTimeField(auto_now_add=True)
-  updated_at = models.DateTimeField(auto_now=True)
-  objects = UserManager()
+
   
 class UserManager(models.Manager):
   
@@ -51,9 +43,38 @@ class UserManager(models.Manager):
     
     return errors
 
-class Item(models.Model):
-  name = models.CharField(max_length=250)
-  created = models.DateTimeField(auto_now_add=True)
+  
+class BlogManager(models.Manager):
+  def blog_validator(self, postData):
+    errors = {}
+    if len(postData['subject']) < 2:
+      errors ['subject'] = "Subject name is too short."
+    if len(postData['blog_description']) < 10:
+      errors ['blog_description'] = "Blog must be at least 10 characters long."
+      
+    return errors
+  
+  
+  
+class User(models.Model):
+  username = models.CharField(max_length=250)
+  email = models.CharField(max_length=50)
+  password = models.TextField()
+  created_at = models.DateTimeField(auto_now_add=True)
+  updated_at = models.DateTimeField(auto_now=True)
+  objects = UserManager()
   
   def __str__(self):
     return self.name
+  
+  
+class Blog(models.Model):
+  subject = models.CharField(max_length=250)
+  blog_description = models.CharField(max_length=450)
+  created_by = models.ForeignKey(User, related_name='user_blog', on_delete=models.CASCADE, null=True)
+  created_at = models.DateTimeField(auto_now_add=True)
+  updated_at = models.DateTimeField(auto_now=True)
+  objects = BlogManager()
+
+def __str__(self):
+  return self.name

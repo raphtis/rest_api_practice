@@ -2,8 +2,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
-from base.models import Item 
-from .serializers import ItemSerializer
+from base.models import User, Blog
+from .serializers import *
 
 
 # GET ALL ITEMS IN DB
