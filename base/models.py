@@ -58,7 +58,7 @@ class BlogManager(models.Manager):
   
 class User(models.Model):
   username = models.CharField(max_length=250)
-  email = models.CharField(max_length=50)
+  email = models.CharField(max_length=250)
   password = models.TextField()
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)

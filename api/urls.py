@@ -2,16 +2,19 @@ from django.urls import path
 from . import views
 
 
+
 urlpatterns = [
     
     # USER PATTERNS
     
     path('', views.getData),
+    path('users', views.getUsers),
+
     
     
     # TICKET PATTERNS
     path('create', views.createTicket),
-    path('item/<int:id>', views.itemDetail)
+    path('blog/<int:id>', views.blogDetail)
     
 
 ]
