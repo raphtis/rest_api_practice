@@ -2,6 +2,7 @@ from rest_framework import serializers, validators
 from django.contrib.auth.models import User
 from base.models import *
 
+
 class BlogSerializer(serializers.ModelSerializer):
   class Meta:
     model = Blog

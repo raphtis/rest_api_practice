@@ -6,13 +6,20 @@ from rest_framework.authtoken.serializers import AuthTokenSerializer
 from django.http import JsonResponse
 from base.models import *
 from knox.models import AuthToken
+from knox.auth import AuthToken, TokenAuthentication
 from .serializers import *
 from django.contrib import messages
 
 import time
 
 
-
+def serialize_user(user):
+  return {
+    "username": user.username,
+    "email": user.email,
+    "first_name": user.first_name,
+    "last_name": user.last_name,
+  }
 
 
 # REGISTER USER
@@ -25,11 +32,7 @@ def register(request):
   _, token = AuthToken.objects.create(user)
   
   return Response({
-    'user_info': {
-      'id': user.id,
-      'username': user.username,
-      'email': user.email
-    },
+    'user_info': serialize_user(user),
     'token': token
   })
 
@@ -42,34 +45,28 @@ def login(request):
   _, token = AuthToken.objects.create(user)
   
   return Response({
-    'user_info': {
-      'id': user.id,
-      'username': user.username,
-      'email': user.email
-    },
+    'user_info': serialize_user(user),
     'token': token
   })
 
 
 # GET USER
 @api_view([ 'GET' ])
-def user_data(request):
+def user_info(request):
   user = request.user
-
   if user.is_authenticated:
     return Response({
-      'user_info': {
-      'id': user.id,
-      'username': user.username,
-      'email': user.email
-    },
-  })
-  return Response({ 'error': 'User Not Authorized'}, status=400)
+      'user_data': serialize_user(user),
+    })
+  return Response({})
+
+
 # UPDATE USER
 
 
 
 # LOGOUT USER
+# HANDLED BY KNOX
 
 
 
