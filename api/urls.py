@@ -8,8 +8,9 @@ urlpatterns = [
     # USER PATTERNS
     
     path('', views.getData),
-    path('users', views.getUsers),
-
+    path('login', views.login),
+    path('register', views.register),
+    path('user_data', views.user_data),
     
     
     # TICKET PATTERNS

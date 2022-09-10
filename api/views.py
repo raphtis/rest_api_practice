@@ -1,28 +1,73 @@
 from rest_framework.response import Response
-from rest_framework import status
-from django.http import JsonResponse
 from rest_framework.decorators import api_view
-from base.models import User, Blog
+from rest_framework import generics, permissions, status
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+
+from django.http import JsonResponse
+from base.models import *
+from knox.models import AuthToken
 from .serializers import *
 from django.contrib import messages
-from django.shortcuts import render, redirect
+
 import time
 
 
 
-# GET ALL USERS
-@api_view([ 'GET' ])
-def getUsers(request):
-  users = User.objects.all()
-  serializer = UserSerializer(users, many = True)
-  return Response(serializer.data)
 
 
 # REGISTER USER
-
-# UPDATE USER
+@api_view([ 'POST' ])
+def register(request):
+  serializer = RegisterSerializer(data = request.data)
+  serializer.is_valid(raise_exception=True)
+  
+  user = serializer.save()
+  _, token = AuthToken.objects.create(user)
+  
+  return Response({
+    'user_info': {
+      'id': user.id,
+      'username': user.username,
+      'email': user.email
+    },
+    'token': token
+  })
 
 # LOGIN USER
+@api_view([ 'POST' ])
+def login(request):
+  serializer = AuthTokenSerializer(data=request.data)
+  serializer.is_valid(raise_exception=True)
+  user = serializer.validated_data['user']
+  _, token = AuthToken.objects.create(user)
+  
+  return Response({
+    'user_info': {
+      'id': user.id,
+      'username': user.username,
+      'email': user.email
+    },
+    'token': token
+  })
+
+
+# GET USER
+@api_view([ 'GET' ])
+def user_data(request):
+  user = request.user
+
+  if user.is_authenticated:
+    return Response({
+      'user_info': {
+      'id': user.id,
+      'username': user.username,
+      'email': user.email
+    },
+  })
+  return Response({ 'error': 'User Not Authorized'}, status=400)
+# UPDATE USER
+
+
 
 # LOGOUT USER
 
